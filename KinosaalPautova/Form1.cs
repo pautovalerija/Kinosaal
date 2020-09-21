@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using ContentAlignment = System.Drawing.ContentAlignment;
 
 namespace KinosaalPautova
 {
@@ -24,6 +27,9 @@ namespace KinosaalPautova
         Button btn, btnk;
         bool ost = false;
         public string text;
+        Image imgred = Image.FromFile("red.png");
+        Image imggreen = Image.FromFile("green.png");
+        Image imgyellow = Image.FromFile("yellow.png");
 
 
         private void Form1_Load(object sender, EventArgs e)
@@ -47,36 +53,44 @@ namespace KinosaalPautova
             StreamReader from_file = new StreamReader("Kino.txt", false);
             string[] arr = from_file.ReadToEnd().Split('\n');
             from_file.Close();
-            this.Size = new Size(300, 430);
+            this.Size = new Size(600, 430);
             this.Text = "kino";
 
 
             for (int i = 0; i < 4; i++)
             {
                 rida[i] = new Label();
-                rida[i].Text = "Rida" + (i + 1);
+                rida[i].AutoSize = false;
+                rida[i].Font = new Font("Tobota", 14, FontStyle.Bold);
+                rida[i].ForeColor = Color.White;
+                rida[i].BackColor = Color.Transparent;
+                rida[i].Text = "" + (i + 1);
+                rida[i].TextAlign= ContentAlignment.MiddleCenter;
                 rida[i].Size = new Size(50, 50);
 
-                rida[i].Location = new Point(1, i * 50);
+                rida[i].Location = new Point(60, i * 50);
                 this.Controls.Add(rida[i]);
 
                 for (int j = 0; j < 4; j++)
                 {
                     _arr[i, j] = new Label();
+                    _arr[i, j].Font = new Font("Tobota", 14, FontStyle.Bold);
+                    _arr[i, j].TextAlign = ContentAlignment.TopCenter;
+                    _arr[i, j].BackColor = Color.Transparent;
                     string[] arv = arr[i].Split(';');
                     string[] ardNum = arv[j].Split(',');
                     if (ardNum[2] == "true")
                     {
-                        _arr[i, j].BackColor = Color.Red;
+                        _arr[i, j].Image = imgred;
                     }
                     else
                     {
-                        _arr[i, j].BackColor = Color.LightGreen;
+                        _arr[i, j].Image = imggreen;
                     }
-                    _arr[i, j].Text = "Koht" + (j + 1);
+                    _arr[i, j].Text = "" + (j + 1);
+                    _arr[i, j].Image=imggreen;
                     _arr[i, j].Size = new Size(50, 50);
-                    _arr[i, j].BorderStyle = BorderStyle.Fixed3D;
-                    _arr[i, j].Location = new Point(j * 50 + 50, i * 50);
+                    _arr[i, j].Location = new Point(j * 100 + 110, i * 50);
                     this.Controls.Add(_arr[i, j]);
                     _arr[i, j].Tag = new int[] { i, j };
                     _arr[i, j].Click += new System.EventHandler(Form1_Click);
@@ -84,12 +98,12 @@ namespace KinosaalPautova
             }
             btn = new Button();
             btn.Text = "Osta";
-            btn.Location = new Point(176, 200);
+            btn.Location = new Point(400, 210);
             btn.Click += Btn_Click;
             this.Controls.Add(btn);
             btnk = new Button();
             btnk.Text = "Kinni";
-            btnk.Location = new Point(1, 200);
+            btnk.Location = new Point(100, 210);
             this.Controls.Add(btnk);
             btnk.Click += Btnk_Click; 
             
@@ -103,7 +117,7 @@ namespace KinosaalPautova
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (_arr[i, j].BackColor == Color.LightYellow )
+                    if (_arr[i, j].Image == imgyellow )
                     {
                         Btn_Click_Func();
                     }
@@ -114,7 +128,7 @@ namespace KinosaalPautova
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (_arr[i, j].BackColor == Color.Red)
+                    if (_arr[i, j].Image == imgred)
                     {
                         text += i + "," + j + ",true;";
                     }
@@ -142,9 +156,9 @@ namespace KinosaalPautova
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        if (_arr[i, j].BackColor == Color.LightYellow)
+                        if (_arr[i, j].Image == imgyellow)
                         {
-                            _arr[i, j].BackColor = Color.Red;
+                            _arr[i, j].Image = imgred;
                         }
                     }
                 }
@@ -156,10 +170,10 @@ namespace KinosaalPautova
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        if (_arr[i, j].BackColor == Color.LightYellow) 
+                        if (_arr[i, j].Image == imgyellow) 
                         {
                             _arr[i, j].Text = "Koht" + (j + 1);
-                            _arr[i, j].BackColor = Color.LightGreen;
+                            _arr[i, j].Image = imggreen;
                             ost = false;
                         }
                             
@@ -187,7 +201,7 @@ namespace KinosaalPautova
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            if (_arr[i, j].BackColor == Color.Red)
+                            if (_arr[i, j].Image == imgred)
                             {
                                 text += "Rida: " + (i + 1) + "; Koht: " + (j + 1) + "<br>";
                             }
@@ -212,10 +226,10 @@ namespace KinosaalPautova
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            if (_arr[i, j].BackColor == Color.LightYellow)
+                            if (_arr[i, j].Image == imgyellow)
                             {
                                 _arr[i, j].Text = "Koht" + (j + 1);
-                                _arr[i, j].BackColor = Color.LightGreen;
+                                _arr[i, j].Image = imggreen;
                                 ost = false;
                             }
 
@@ -272,14 +286,14 @@ namespace KinosaalPautova
         {
             var label = (Label)sender;
             var tag = (int[])label.Tag;
-            if (_arr[tag[0], tag[1]].BackColor == Color.LightGreen)
+            if (_arr[tag[0], tag[1]].Image == imggreen)
             {
-                _arr[tag[0], tag[1]].Text = "kinni";
-                _arr[tag[0], tag[1]].BackColor = Color.LightYellow;
+                _arr[tag[0], tag[1]].Text = "X";
+                _arr[tag[0], tag[1]].Image = imgyellow;
                 ost = true;
                 
             }
-            if (_arr[tag[0], tag[1]].BackColor == Color.Red)
+            if (_arr[tag[0], tag[1]].Image == imgred)
             
             {
                 string message = "See koht juba ostatud";
